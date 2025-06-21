@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Animes Online / Séries / Doramas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #111;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+    header h1 {
+      margin: 10px 0;
+    }
+    .banner-images {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .banner-images img {
+      width: 200px;
+      height: auto;
+      border-radius: 8px;
+    }
+    nav {
+      background-color: #222;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      display: flex;
+      padding: 20px;
+    }
+    .content {
+      flex: 3;
+    }
+    .sidebar {
+      flex: 1;
+      margin-left: 20px;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .movie-list, .most-watched {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    footer {
+      background-color: #111;
+      color: white;
+      text-align: center;
+      padding: 15px;
+    }
+    .search-bar {
+      margin: 20px;
+      text-align: center;
+    }
+    .search-bar input {
+      padding: 10px;
+      width: 60%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .video-player {
+      margin-top: 20px;
+      background: #000;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .video-player iframe {
+      width: 100%;
+      max-height: 400px;
+      border-radius: 8px;
+    }
+    .movie-item {
+      display: none;
+    }
+  </style>
+  <script>
+    async function carregarTitulos() {
+      const resposta = await fetch('https://api-titulos.onrender.com/titulos');
+      const dados = await resposta.json();
+      const lista = document.getElementById('lista-titulos');
+      lista.innerHTML = '';
+      dados.forEach(titulo => {
+        const item = document.createElement('li');
+        item.className = 'movie-item';
+        item.textContent = `${titulo.nome} - ${titulo.data}`;
+        lista.appendChild(item);
+      });
+      filtrarTitulos();
+    }
+
+    function filtrarTitulos() {
+      const termo = document.getElementById('busca').value.toLowerCase();
+      const filmes = document.querySelectorAll('.movie-item');
+      filmes.forEach(filme => {
+        const texto = filme.textContent.toLowerCase();
+        filme.style.display = texto.includes(termo) ? 'list-item' : 'none';
+      });
+    }
+
+    window.onload = carregarTitulos;
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Animes Online / Séries / Doramas</h1>
+    <div class="banner-images">
+      <img src="anime.jpg" alt="Anime" />
+      <img src="serie.jpg" alt="Série" />
+      <img src="dorama.jpg" alt="Dorama" />
+    </div>
+  </header>
+
+  <nav>
+    <a href="#">HOME</a>
+    <a href="#">ANIME</a>
+    <a href="#">DORAMA</a>
+    <a href="#">FILME</a>
+  </nav>
+
+  <div class="search-bar">
+    <input id="busca" type="text" placeholder="Buscar por título..." oninput="filtrarTitulos()" />
+  </div>
+
+  <main>
+    <div class="content">
+      <div class="movie-list">
+        <h2>Lançamentos do Dia</h2>
+        <ul id="lista-titulos">
+          <!-- Conteúdo será preenchido dinamicamente -->
+        </ul>
+      </div>
+
+      <div class="video-player">
+        <h2>Assista Agora</h2>
+        <iframe
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="most-watched">
+        <h2>Mais Assistidos</h2>
+        <ul>
+          <li>Anime A</li>
+          <li>Série B</li>
+          <li>Dorama C</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <p>Parcerias: Nome1 | Nome2 | Nome3</p>
+  </footer>
+</body>
+</html>
