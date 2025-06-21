@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Animes Online / Séries / Doramas</title>
   <style>
     body {
@@ -20,16 +20,39 @@
     header h1 {
       margin: 10px 0;
     }
-    .banner-images {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 15px;
+    .carousel {
+      position: relative;
+      max-width: 640px;
+      margin: 15px auto 0;
+      border-radius: 10px;
+      overflow: hidden;
     }
-    .banner-images img {
-      width: 200px;
+    .carousel img {
+      width: 100%;
       height: auto;
-      border-radius: 8px;
+      display: none;
+      border-radius: 10px;
+    }
+    .carousel img.active {
+      display: block;
+    }
+    .carousel .controls {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 15px;
+    }
+    .carousel button {
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 5px;
     }
     nav {
       background-color: #222;
@@ -99,6 +122,22 @@
     }
   </style>
   <script>
+    let index = 0;
+    function mostrarSlide(n) {
+      const imagens = document.querySelectorAll('.carousel img');
+      imagens.forEach(img => img.classList.remove('active'));
+      imagens[n].classList.add('active');
+    }
+    function avancarSlide() {
+      const imagens = document.querySelectorAll('.carousel img');
+      index = (index + 1) % imagens.length;
+      mostrarSlide(index);
+    }
+    function voltarSlide() {
+      const imagens = document.querySelectorAll('.carousel img');
+      index = (index - 1 + imagens.length) % imagens.length;
+      mostrarSlide(index);
+    }
     async function carregarTitulos() {
       const resposta = await fetch('https://api-titulos.onrender.com/titulos');
       const dados = await resposta.json();
@@ -112,7 +151,6 @@
       });
       filtrarTitulos();
     }
-
     function filtrarTitulos() {
       const termo = document.getElementById('busca').value.toLowerCase();
       const filmes = document.querySelectorAll('.movie-item');
@@ -121,17 +159,32 @@
         filme.style.display = texto.includes(termo) ? 'list-item' : 'none';
       });
     }
-
-    window.onload = carregarTitulos;
+    function iniciarCarrossel() {
+      const imagens = document.querySelectorAll('.carousel img');
+      if (imagens.length > 0) {
+        imagens[0].classList.add('active');
+        setInterval(avancarSlide, 4000);
+      }
+    }
+    window.onload = function () {
+      carregarTitulos();
+      iniciarCarrossel();
+    };
   </script>
 </head>
 <body>
   <header>
     <h1>Animes Online / Séries / Doramas</h1>
-    <div class="banner-images">
-      <img src="anime.jpg" alt="Anime" />
-      <img src="serie.jpg" alt="Série" />
-      <img src="dorama.jpg" alt="Dorama" />
+    <div class="carousel">
+      <img src="https://cdn.myanimelist.net/images/anime/10/75815.jpg" alt="Anime">
+      <img src="https://upload.wikimedia.org/wikipedia/pt/9/93/Stranger_Things_3.jpg" alt="Série">
+      <img src="https://m.media-amazon.com/images/I/71PZtxEJ2CL._AC_UF1000,1000_QL80_.jpg" alt="Dorama">
+      <img src="https://m.media-amazon.com/images/I/81N2t4zSB7L._AC_UF1000,1000_QL80_.jpg" alt="Demon Slayer">
+      <img src="https://flxt.tmsimg.com/assets/p170951_b_v8_aa.jpg" alt="Breaking Bad">
+      <div class="controls">
+        <button onclick="voltarSlide()">❮</button>
+        <button onclick="avancarSlide()">❯</button>
+      </div>
     </div>
   </header>
 
@@ -143,25 +196,19 @@
   </nav>
 
   <div class="search-bar">
-    <input id="busca" type="text" placeholder="Buscar por título..." oninput="filtrarTitulos()" />
+    <input id="busca" type="text" placeholder="Buscar por título..." oninput="filtrarTitulos()">
   </div>
 
   <main>
     <div class="content">
       <div class="movie-list">
         <h2>Lançamentos do Dia</h2>
-        <ul id="lista-titulos">
-          <!-- Conteúdo será preenchido dinamicamente -->
-        </ul>
+        <ul id="lista-titulos"></ul>
       </div>
 
       <div class="video-player">
         <h2>Assista Agora</h2>
-        <iframe
-          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
